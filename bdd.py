@@ -8,6 +8,7 @@ class Node(object):
         self.v = v
         self.lo = lo
         self.hi = hi
+        self.aux = 0
 
     def __repr__(self):
         return repr((self.v, self.lo, self.hi))
@@ -67,3 +68,129 @@ def print_array():
     print ", ".join("%d:%s" % (i, v) for i, v in enumerate(array))
 
 print_array()
+
+# reduction
+def reduction(root):
+    # R1
+    v_max = 3
+    head = [NONE] * (v_max + 1)
+
+    if root < 2: return # if root==true or root==false
+    array[0].aux = array[1].aux = array[root].aux = NONE
+
+    s = root
+    while s != 0:
+        print s
+        p = s
+        np = array[p]
+        s = ~np.aux
+        np.aux = head[np.v]
+        head[np.v] = ~p
+        if array[np.lo].aux >= 0:
+            array[np.lo].aux = ~s
+            s = np.lo
+        if array[np.hi].aux >= 0:
+            array[np.hi].aux = ~s
+            s = np.hi
+
+
+    # R2
+    array[0].aux = array[1].aux = 0
+    v = v_max
+
+    # R3
+    p = ~head[v]
+    s = 0
+    while p != 0:
+        np = array[p]
+        p2 = ~np.aux
+        
+        q = np.hi
+        nq = array[q]
+        if nq.lo < 0:
+            np.hi = ~nq.lo
+
+        q = np.lo
+        nq = array[q]
+        if nq.lo < 0:
+            np.lo = ~nq.lo
+            q = np.lo
+
+        if q == np.hi:
+            np.lo = ~q
+            np.hi = avail
+            np.aux = 0
+            avail = p
+        elif np.aux >= 0:
+            np.aux = s
+            s = ~q
+            nq.aux = ~p
+        else:
+            np.aux = array[~(nq.aux)].aux
+            array[~(nq.aux)].aux = p
+
+        p = p2
+
+    # R4
+    print_array()
+    r = ~s
+    s = 0
+    while r >= 0:
+        q = ~array[r].aux
+        array[r].aux = 0
+        if s == 0:
+            s = q
+        else:
+            np.aux = q
+        p = q
+        while array[p] > 0:
+            p = array[p].aux
+
+        r = ~array[p].aux
+    print_array()
+
+    # R5
+    p = s
+    if p == 0:
+        # GOTO 9
+        raise NotImplementedError
+    q = p
+
+    # R6
+    s = array[p].lo
+    assert p == q
+
+    # R7
+    r = array[q].hi
+    if array[r].aux >= 0:
+        array[r].aux = ~q
+    else:
+        array[q].lo = array[r].aux
+        array[q].hi = avail
+        avail = q
+
+    q = array[q].aux
+    if q != 0 and array[q].lo == s:
+        # GOTO R7
+        raise NotImplementedError
+
+    # R8
+    if array[p].lo >= 0:
+        array[array[p].hi].aux = 0
+        p = array[p].aux
+        if p != r:
+            # GOTO R8
+            raise NotImplementedError
+
+    # R9
+    if p != 0:
+        # GOTO R6
+        raise NotImplementedError
+    if v > array[root].v:
+        v -= 1
+        # GOTO R3
+        raise NotImplementedError
+    if array[root].lo < 0:
+        root = ~array[root].lo
+        
+reduction(root)
