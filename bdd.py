@@ -74,6 +74,7 @@ print_array()
 # reduction
 def reduction(root):
     global p, q, r, s
+    avail = new_node(0)
     # R1
     print 'R1'
     v_max = 3
