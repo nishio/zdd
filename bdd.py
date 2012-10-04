@@ -71,6 +71,7 @@ print_array()
 
 # reduction
 def reduction(root):
+    global p, q, r, s
     # R1
     v_max = 3
     head = [NONE] * (v_max + 1)
@@ -99,98 +100,114 @@ def reduction(root):
     v = v_max
 
     # R3
-    p = ~head[v]
-    s = 0
-    while p != 0:
-        np = array[p]
-        p2 = ~np.aux
-        
-        q = np.hi
-        nq = array[q]
-        if nq.lo < 0:
-            np.hi = ~nq.lo
+    while True:
+        p = ~head[v]
+        s = 0
+        while p != 0:
+            np = array[p]
+            p2 = ~np.aux
 
-        q = np.lo
-        nq = array[q]
-        if nq.lo < 0:
-            np.lo = ~nq.lo
+            q = np.hi
+            nq = array[q]
+            if nq.lo < 0:
+                np.hi = ~nq.lo
+
             q = np.lo
+            nq = array[q]
+            if nq.lo < 0:
+                np.lo = ~nq.lo
+                q = np.lo
 
-        if q == np.hi:
-            np.lo = ~q
-            np.hi = avail
-            np.aux = 0
-            avail = p
-        elif np.aux >= 0:
-            np.aux = s
-            s = ~q
-            nq.aux = ~p
-        else:
-            np.aux = array[~(nq.aux)].aux
-            array[~(nq.aux)].aux = p
+            if q == np.hi:
+                np.lo = ~q
+                np.hi = avail
+                np.aux = 0
+                avail = p
+            elif np.aux >= 0:
+                np.aux = s
+                s = ~q
+                nq.aux = ~p
+            else:
+                np.aux = array[~(nq.aux)].aux
+                array[~(nq.aux)].aux = p
 
-        p = p2
+            p = p2
 
-    # R4
+        # R4
+        print_array()
+        r = ~s
+        s = 0
+        while r >= 0:
+            q = ~array[r].aux
+            array[r].aux = 0
+            if s == 0:
+                s = q
+            else:
+                np.aux = q
+            p = q
+            while array[p] > 0:
+                p = array[p].aux
+
+            r = ~array[p].aux
+        print_array()
+
+        # R5
+        p = s
+        if p != 0:
+            # not jumped to R9
+            q = p
+            R678()
+
+        print_array()
+        # R9
+        while p != 0:
+            # GOTO R6
+            R678()
+
+        if v > array[root].v:
+            v -= 1
+            # GOTO R3
+            continue
+        break
+
+    if array[root].lo < 0:
+        root = ~array[root].lo
+
     print_array()
-    r = ~s
-    s = 0
-    while r >= 0:
-        q = ~array[r].aux
-        array[r].aux = 0
-        if s == 0:
-            s = q
-        else:
-            np.aux = q
-        p = q
-        while array[p] > 0:
-            p = array[p].aux
 
-        r = ~array[p].aux
-    print_array()
-
-    # R5
-    p = s
-    if p == 0:
-        # GOTO 9
-        raise NotImplementedError
-    q = p
-
+def R678():
+    global p, q, r, s
     # R6
     s = array[p].lo
     assert p == q
 
     # R7
-    r = array[q].hi
-    if array[r].aux >= 0:
-        array[r].aux = ~q
-    else:
-        array[q].lo = array[r].aux
-        array[q].hi = avail
-        avail = q
+    while True:
+        r = array[q].hi
+        if array[r].aux >= 0:
+            array[r].aux = ~q
+        else:
+            array[q].lo = array[r].aux
+            array[q].hi = avail
+            avail = q
 
-    q = array[q].aux
-    if q != 0 and array[q].lo == s:
-        # GOTO R7
-        raise NotImplementedError
+        q = array[q].aux
+        if q != 0 and array[q].lo == s:
+            # GOTO R7
+            continue
+        break
 
     # R8
-    if array[p].lo >= 0:
-        array[array[p].hi].aux = 0
-        p = array[p].aux
-        if p != r:
-            # GOTO R8
-            raise NotImplementedError
+    while True:
+        if array[p].lo >= 0:
+            array[array[p].hi].aux = 0
+            p = array[p].aux
+            if p != r:
+                # GOTO R8
+                continue
+            break
 
-    # R9
-    if p != 0:
-        # GOTO R6
-        raise NotImplementedError
-    if v > array[root].v:
-        v -= 1
-        # GOTO R3
-        raise NotImplementedError
-    if array[root].lo < 0:
-        root = ~array[root].lo
-        
+
+import dis
+
 reduction(root)
