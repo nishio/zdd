@@ -113,32 +113,29 @@ def reduction(root):
         p = ~head[v]
         s = 0
         while p != 0:
-            np = array[p]
-            p2 = ~np.aux
+            p2 = ~array[p].aux
 
-            q = np.hi
-            nq = array[q]
-            if nq.lo < 0:
-                np.hi = ~nq.lo
+            q = array[p].hi
+            if array[q].lo < 0:
+                array[p].hi = ~array[q].lo
 
-            q = np.lo
-            nq = array[q]
-            if nq.lo < 0:
-                np.lo = ~nq.lo
-                q = np.lo
+            q = array[p].lo
+            if array[q].lo < 0:
+                array[p].lo = ~array[q].lo
+                q = array[p].lo
 
-            if q == np.hi:
-                np.lo = ~q
-                np.hi = avail
-                np.aux = 0
+            if q == array[p].hi:
+                array[p].lo = ~q
+                array[p].hi = avail
+                array[p].aux = 0
                 avail = p
-            elif np.aux >= 0:
-                np.aux = s
+            elif array[q].aux >= 0:
+                array[p].aux = s
                 s = ~q
-                nq.aux = ~p
+                array[q].aux = ~p
             else:
-                np.aux = array[~(nq.aux)].aux
-                array[~(nq.aux)].aux = p
+                array[p].aux = array[~(array[q].aux)].aux
+                array[~(array[q].aux)].aux = p
 
             p = p2
 
@@ -158,7 +155,7 @@ def reduction(root):
             if s == 0:
                 s = q
             else:
-                np.aux = q
+                array[p].aux = q
             p = q
             while array[p] > 0:
                 p = array[p].aux
