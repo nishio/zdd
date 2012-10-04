@@ -139,7 +139,6 @@ def reduction(root):
 
             p = p2
 
-        assert s == -1
         print 'after R3'
         print avail
         print_array()
@@ -219,11 +218,11 @@ def R678():
         print 'R8'
         if array[p].lo >= 0:
             array[array[p].hi].aux = 0
-            p = array[p].aux
-            if p != q:
-                # GOTO R8
-                continue
-            break
+        p = array[p].aux
+        if p != q:
+            # GOTO R8
+            continue
+        break
 
 
 import dis
