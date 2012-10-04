@@ -220,7 +220,7 @@ def R678():
         if array[p].lo >= 0:
             array[array[p].hi].aux = 0
             p = array[p].aux
-            if p != r:
+            if p != q:
                 # GOTO R8
                 continue
             break
