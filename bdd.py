@@ -1,3 +1,5 @@
+import pdb
+
 NONE = -1
 
 class Node(object):
@@ -11,7 +13,7 @@ class Node(object):
         self.aux = 0
 
     def __repr__(self):
-        return repr((self.v, self.lo, self.hi))
+        return repr((self.v, self.lo, self.hi, self.aux))
 
 
 # generate BDD for median function
@@ -73,6 +75,7 @@ print_array()
 def reduction(root):
     global p, q, r, s
     # R1
+    print 'R1'
     v_max = 3
     head = [NONE] * (v_max + 1)
 
@@ -95,12 +98,17 @@ def reduction(root):
             s = np.hi
 
 
+    print_array()
+    print head
+
     # R2
+    print 'R2'
     array[0].aux = array[1].aux = 0
     v = v_max
 
     # R3
     while True:
+        print 'R3'
         p = ~head[v]
         s = 0
         while p != 0:
@@ -133,11 +141,17 @@ def reduction(root):
 
             p = p2
 
-        # R4
+        assert s == -1
+        print 'after R3'
+        print avail
         print_array()
+
+        # R4
+        print 'R4'
         r = ~s
         s = 0
         while r >= 0:
+            print r
             q = ~array[r].aux
             array[r].aux = 0
             if s == 0:
@@ -152,6 +166,7 @@ def reduction(root):
         print_array()
 
         # R5
+        print 'R5'
         p = s
         if p != 0:
             # not jumped to R9
@@ -160,9 +175,11 @@ def reduction(root):
 
         print_array()
         # R9
+        print 'R9'
         while p != 0:
             # GOTO R6
             R678()
+            print 'R9'
 
         if v > array[root].v:
             v -= 1
@@ -178,11 +195,13 @@ def reduction(root):
 def R678():
     global p, q, r, s
     # R6
+    print 'R6'
     s = array[p].lo
     assert p == q
 
     # R7
     while True:
+        print 'R7'
         r = array[q].hi
         if array[r].aux >= 0:
             array[r].aux = ~q
@@ -199,6 +218,7 @@ def R678():
 
     # R8
     while True:
+        print 'R8'
         if array[p].lo >= 0:
             array[array[p].hi].aux = 0
             p = array[p].aux
