@@ -105,7 +105,7 @@ def reduction(root):
     # R2
     print 'R2'
     array[0].aux = array[1].aux = 0
-    v = v_max
+    v = v_max - 1
 
     # R3
     while True:
