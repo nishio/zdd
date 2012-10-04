@@ -157,7 +157,7 @@ def reduction(root):
             else:
                 array[p].aux = q
             p = q
-            while array[p] > 0:
+            while array[p].aux > 0:
                 p = array[p].aux
 
             r = ~array[p].aux
