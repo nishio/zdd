@@ -73,7 +73,7 @@ print_array()
 
 # reduction
 def reduction(root):
-    global p, q, r, s
+    global p, q, r, s, avail
     avail = new_node(0)
     # R1
     print 'R1'
@@ -191,7 +191,7 @@ def reduction(root):
     print_array()
 
 def R678():
-    global p, q, r, s
+    global p, q, r, s, avail
     # R6
     print 'R6'
     s = array[p].lo
