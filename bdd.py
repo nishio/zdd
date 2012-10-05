@@ -270,3 +270,7 @@ assert repr(array) == '[(-1, 0, 0, 0), (-1, 1, 1, 0), (0, 3, 6, 0), (1, 4, 5, 0)
 reduction(root)
 assert repr(array) == '[(-1, 0, 0, 0), (-1, 1, 1, 0), (0, 3, 6, 0), (1, 0, 5, 0), (2, -1, 9, 0), (2, 0, 1, 0), (1, 5, 1, 0), (2, -6, 8, 0), (2, -2, 4, 0), (0, -1, -1, 0)]'
 print 'ok.'
+
+# TODO
+# P77, kernel of C6
+array = array[:2] # true and false
