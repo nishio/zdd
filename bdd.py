@@ -104,11 +104,12 @@ def reduction(root):
     # links are represented by AUX. next(x) == ~AUX[x]
     print 'R1'
     v_max = 3
-    head = [NONE] * (v_max + 1)
+    head = [NONE] * v_max
 
     if root < 2: return # if root==true or root==false
     AUX[0] = AUX[1] = AUX[root] = NONE
 
+    print_array()
     s = root
     while s != 0:
         print s
@@ -142,30 +143,36 @@ def reduction(root):
 
             q = HI[p]
             if LO[q] < 0:
+                print "R3-1"
                 HI[p] = ~LO[q]
 
             q = LO[p]
             if LO[q] < 0:
+                print "R3-2"
                 LO[p] = ~LO[q]
                 q = LO[p]
 
             if q == HI[p]:
+                print "R3-3"
                 LO[p] = ~q
                 HI[p] = avail
                 AUX[p] = 0
                 avail = p
             elif AUX[q] >= 0:
+                print "R3-4"
                 AUX[p] = s
                 s = ~q
                 AUX[q] = ~p
             else:
+                print "R3-5"
                 AUX[p] = AUX[~(AUX[q])]
                 AUX[~(AUX[q])] = p
 
             p = p2
 
         print 'after R3'
-        print avail
+        print 'avail:', avail
+        print 's:', s
         print_array()
 
         # R4
@@ -185,6 +192,8 @@ def reduction(root):
                 p = AUX[p]
 
             r = ~AUX[p]
+
+        print 'after R4'
         print_array()
 
         # R5
@@ -251,7 +260,7 @@ def R678():
         break
 
 
-# test
+# test TAOCP-ja P72 7.1.4 fig21
 assert repr(array) == '[(-1, 0, 0, 0), (-1, 1, 1, 0), (0, 3, 6, 0), (1, 4, 5, 0), (2, 0, 0, 0), (2, 0, 1, 0), (1, 7, 8, 0), (2, 0, 1, 0), (2, 1, 1, 0)]'
 reduction(root)
 assert repr(array) == '[(-1, 0, 0, 0), (-1, 1, 1, 0), (0, 3, 6, 0), (1, 0, 5, 0), (2, -1, 9, 0), (2, 0, 1, 0), (1, 5, 1, 0), (2, -6, 8, 0), (2, -2, 4, 0), (0, -1, -1, 0)]'
