@@ -16,9 +16,6 @@ class Node(object):
         return repr((self.v, self.lo, self.hi, self.aux))
 
 
-# generate BDD for median function
-array = []
-
 class Macro(object):
     """
     Syntax suger to write array[x].aux as AUX[x]
@@ -63,11 +60,6 @@ def set(node_id, hilo, v):
     raise AssertionError('not here')
 
 
-false = new_node(NONE, 0, 0)
-true = new_node(NONE, 1, 1)
-root = new_node(0)
-
-
 def get_child(node, hilo, v):
     print 'get_child of %s, via %s' % (node, hilo)
     c = get(node, hilo)
@@ -76,18 +68,6 @@ def get_child(node, hilo, v):
         print 'not found, created %s' % c
         set(node, hilo, c)
     return c
-
-
-for x in [0, 1]:
-    c = get_child(root, x, 1)
-    for y in [0, 1]:
-        c2 = get_child(c, y, 2)
-        for z in [0, 1]:
-            if x + y + z > 1:
-                result = true
-            else:
-                result = false
-            set(c2, z, result)
 
 
 def print_array():
@@ -261,6 +241,26 @@ def R678():
 
 
 # test TAOCP-ja P72 7.1.4 fig21
+
+# generate BDD for median function
+array = []
+false = new_node(NONE, 0, 0) # == 0
+true = new_node(NONE, 1, 1) # == 1
+root = new_node(0) # == 2
+
+
+for x in [0, 1]:
+    c = get_child(root, x, 1)
+    for y in [0, 1]:
+        c2 = get_child(c, y, 2)
+        for z in [0, 1]:
+            if x + y + z > 1:
+                result = true
+            else:
+                result = false
+            set(c2, z, result)
+
+
 assert repr(array) == '[(-1, 0, 0, 0), (-1, 1, 1, 0), (0, 3, 6, 0), (1, 4, 5, 0), (2, 0, 0, 0), (2, 0, 1, 0), (1, 7, 8, 0), (2, 0, 1, 0), (2, 1, 1, 0)]'
 reduction(root)
 assert repr(array) == '[(-1, 0, 0, 0), (-1, 1, 1, 0), (0, 3, 6, 0), (1, 0, 5, 0), (2, -1, 9, 0), (2, 0, 1, 0), (1, 5, 1, 0), (2, -6, 8, 0), (2, -2, 4, 0), (0, -1, -1, 0)]'
