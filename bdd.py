@@ -248,18 +248,23 @@ false = new_node(NONE, 0, 0) # == 0
 true = new_node(NONE, 1, 1) # == 1
 root = new_node(0) # == 2
 
+def median(x, y, z):
+    if x + y + z > 1:
+        return true
+    return false
 
-for x in [0, 1]:
-    c = get_child(root, x, 1)
-    for y in [0, 1]:
-        c2 = get_child(c, y, 2)
-        for z in [0, 1]:
-            if x + y + z > 1:
-                result = true
-            else:
-                result = false
-            set(c2, z, result)
+v_max = 3
+from all_bits import all_bits
 
+def generate_bdt(f):
+    for xs in all_bits([0] * v_max):
+        c = root
+        for i in range(v_max - 1):
+            c = get_child(c, xs[i], i + 1)
+        result = f(*xs)
+        set(c, xs[-1], result)
+
+generate_bdt(median)
 
 assert repr(array) == '[(-1, 0, 0, 0), (-1, 1, 1, 0), (0, 3, 6, 0), (1, 4, 5, 0), (2, 0, 0, 0), (2, 0, 1, 0), (1, 7, 8, 0), (2, 0, 1, 0), (2, 1, 1, 0)]'
 reduction(root)
