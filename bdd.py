@@ -308,9 +308,9 @@ def filtered_show():
             if x == true or x == false: continue
             array[x].id = x
             buf.append(x)
-            if HI[x] not in next:
+            if HI[x] not in next and HI[x] not in buf:
                 next.append(HI[x])
-            if LO[x] not in next:
+            if LO[x] not in next and LO[x] not in buf:
                 next.append(LO[x])
 
     for v in range(v_max):
