@@ -83,7 +83,6 @@ def reduction(root):
     # 'head' points the head of lists
     # links are represented by AUX. next(x) == ~AUX[x]
     print 'R1'
-    v_max = 3
     head = [NONE] * v_max
 
     if root < 2: return # if root==true or root==false
@@ -274,3 +273,54 @@ print 'ok.'
 # TODO
 # P77, kernel of C6
 array = array[:2] # true and false
+root = new_node(0) # == 2
+
+def kernel(*xs):
+    """
+    if X is kernel, no 2 continuous 1s in X and no 3 continuous 0s in X.
+    """
+    for i in range(len(xs)):
+        if xs[i - 1] == xs[i] == 1:
+            return false
+
+    for i in range(len(xs)):
+        if xs[i - 2] == xs[i - 1] == xs[i] == 0:
+            return false
+
+    return true
+
+v_max = 6
+generate_bdt(kernel)
+reduction(root)
+print len(array)
+
+def filtered_show():
+    """
+    show array after reduction
+    filtered out unused node, sorted with their values
+    """
+    buf = []
+    next = [root]
+    while next:
+        cur = next
+        next = []
+        for x in cur:
+            if x == true or x == false: continue
+            array[x].id = x
+            buf.append(x)
+            if HI[x] not in next:
+                next.append(HI[x])
+            if LO[x] not in next:
+                next.append(LO[x])
+
+    for v in range(v_max):
+        print "Value:", v
+        for x in buf:
+            if V[x] == v:
+                print ("%d:(LO: %d, HI: %d)" % (array[x].id, LO[x], HI[x])),
+        print
+
+    return buf
+
+
+assert repr(filtered_show()) == '[2, 34, 3, 35, 19, 4, 43, 36, 20, 12, 21, 40, 13, 23, 14]'
