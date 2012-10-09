@@ -1,5 +1,5 @@
 import pdb
-
+IS_ZERO_SUPPRESS = False
 NONE = -1
 
 class Node(object):
@@ -131,7 +131,8 @@ def reduction(root):
                 LO[p] = ~LO[q]
                 q = LO[p]
 
-            if q == HI[p]:
+            if ((not IS_ZERO_SUPPRESS and q == HI[p]) or
+                (IS_ZERO_SUPPRESS and HI[p] == false)):
                 print "R3-3"
                 LO[p] = ~q
                 HI[p] = avail
@@ -270,8 +271,7 @@ reduction(root)
 assert repr(array) == '[(-1, 0, 0, 0), (-1, 1, 1, 0), (0, 3, 6, 0), (1, 0, 5, 0), (2, -1, 9, 0), (2, 0, 1, 0), (1, 5, 1, 0), (2, -6, 8, 0), (2, -2, 4, 0), (0, -1, -1, 0)]'
 print 'ok.'
 
-# TODO
-# P77, kernel of C6
+# TAOCP-ja P77, kernel of C6
 array = array[:2] # true and false
 root = new_node(0) # == 2
 
@@ -324,3 +324,13 @@ def filtered_show():
 
 
 assert repr(filtered_show()) == '[2, 34, 3, 35, 19, 4, 43, 36, 20, 12, 21, 40, 13, 23, 14]'
+
+# Test of ZDD
+# TAOCP-ja P117 fig 122, ZDD of kernel of C6
+
+IS_ZERO_SUPPRESS = True
+array = array[:2] # true and false
+root = new_node(0) # == 2
+generate_bdt(kernel)
+reduction(root)
+filtered_show()
